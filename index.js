@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Koa = require('koa');
 const Router = require('@koa/router');//라우터 - 웹서버의 라우터 세팅
 const bodyParser=require('koa-bodyparser');
