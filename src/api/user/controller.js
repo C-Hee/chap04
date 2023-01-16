@@ -3,8 +3,8 @@ const SECRET_KEY = 'my-secret-key';
 
 //해당 id의 회원정보들
 exports.info = (ctx, next) => {
-    let name = ctx.params.id;
-    ctx.body = `${name} 회원에 대한 정보`;
+    let id = ctx.params.id;
+    ctx.body = `${id} 회원에 대한 정보`;
 }
 
 exports.register = async (ctx, next) => {
@@ -16,6 +16,8 @@ exports.register = async (ctx, next) => {
 
 exports.login = async (ctx, next) => {
     //로그인 모듈
+    //let id = ctx.request.body.id;
+    //let pw = ctx.request.body.pw;
 
     let { id, pw } = ctx.request.body;
     let result = "";
@@ -32,11 +34,11 @@ exports.login = async (ctx, next) => {
  * jwt 토큰 생성
  * @param {object} payload 추가적으로 저장할 payload
  * @returns {string} jwt 토큰 string
- * jwt에서 비동기를 위해 promise로 감쌈
+ * jwt에서 콜백을 위해 promise로 감쌈
   */
 let generateToken = (payload) => {
     return new Promise((resolve, reject) => {
-        jwt.sign(payload, SECRET_KEY, (error, token) => {
+        jwt.sign(payload, process.env.APP_KEY, (error, token) => {
             // if(error){
             //     reject(error);
             // }
