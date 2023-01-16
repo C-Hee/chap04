@@ -1,9 +1,11 @@
 const Koa = require('koa');
-const Router = require('@koa/router');
-//라우터 - 웹서버의 라우터 세팅
+const Router = require('@koa/router');//라우터 - 웹서버의 라우터 세팅
 const bodyParser=require('koa-bodyparser');
 const app = new Koa();
 const router= new Router();
+const render=require('koa-ejs');
+const path=require('path');
+
 
 
 //환경 변수를 포트값으로 세팅, null이나 undefined 일 경우 3000으로 세팅
@@ -18,7 +20,16 @@ app.use(require('koa-static')(`${__dirname}/public`));
 router.use(require('./src/routes').routes());
 app.use(router.routes());
 app.use(router.allowedMethods());
+
+//EJS 템플릿엔진
+render(app,{
+    //layout:'null'
+    layout: 'layouts/web',
+    root: path.join(__dirname, '/views'),
+    viewExt: 'ejs',cache:false,
+});
+
 //서버 실행
 app.listen(port, () => {
     console.log(`웹서버 구동... ${port}`);
-})
+});
