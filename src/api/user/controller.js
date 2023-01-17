@@ -1,33 +1,49 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'my-secret-key';
+const { register } = require('./query');
+const {login}=require('./query');
+const crypto = require('crypto');
 
-//해당 id의 회원정보들
+/**해당 id의 회원정보들*/
 exports.info = (ctx, next) => {
     let id = ctx.params.id;
     ctx.body = `${id} 회원에 대한 정보`;
 }
-
+/**회원가입 처리*/
 exports.register = async (ctx, next) => {
-    //회원가입 처리 모듈
+    //pbkdf2Sync(word, salt, 반복힛수, 글자수, 암호화 방식);
+    let { email, password, name } = ctx.request.body;
+    let result = crypto.pbkdf2Sync(password, process.env.APP_KEY,50, 50, 'sha512');
 
-    let token = await generateToken({ name: 'my-name' });
-    ctx.body = token;
+    let { affectedRows } = await register(email, result.toString('base64'), name);
+    console.log(affectedRows);
+    if (affectedRows > 0) {
+
+        let token = await generateToken({ name });
+        ctx.body = token;
+
+    } else {
+        ctx.body = { result: "fail" };
+    }
+
 }
-
+/** 로그인 모듈 */
 exports.login = async (ctx, next) => {
-    //로그인 모듈
+
     //let id = ctx.request.body.id;
     //let pw = ctx.request.body.pw;
 
-    let { id, pw } = ctx.request.body;
-    let result = "";
-    if (id === 'admin' && pw === '1234') {
-        result = await generateToken({ name: 'abc' });
+    let { email, password } = ctx.request.body;
+    let result = crypto.pbkdf2Sync(password, process.env.APP_KEY,50, 50, 'sha512');
+
+    let item = await login(email,result.toString('base64'));
+
+    if (item ==null) {
+        ctx.body = { result: "result null fail" };
+    } else {
+        //로그인 성공시 토큰을 생성, 브라우저로 전송
+        let token = await generateToken({ name:item.name });
+        ctx.body = token;
     }
-    else {
-        result = "id 또는 pw가 올바르지 않습ㄴ디ㅏ";
-    }
-    ctx.body = result;
 }
 
 /**
@@ -43,6 +59,7 @@ let generateToken = (payload) => {
             //     reject(error);
             // }
             // resolve(token);}
+            //삼항연산자 style
             (error) ? reject(error) : resolve(token);
         })
 
