@@ -6,6 +6,7 @@ const path = require('path');
 const upload = multer({
     dest:path.resolve(__dirname, '../','storage')
 });
+const apiFileController = require('./api/file/controller')
 
 const {myLogging}=require('./middleware/logging');
 const {verify} = require('./middleware/auth');
@@ -17,7 +18,9 @@ const koaEjs = require('koa-ejs');
 
 router.use(myLogging);
 
-router.post('/file/upload', upload.single('file'), require('./file/controller').upload);
+router.post('/file/upload', upload.single('file'), apiFileController.upload);
+router.get('/file/:id', apiFileController.download);
+
 
 router.get('/',webController.home);
 router.get('/page/:page',webController.page);
