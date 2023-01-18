@@ -12,7 +12,7 @@ exports.info = (ctx, next) => {
 exports.register = async (ctx, next) => {
     //pbkdf2Sync(word, salt, 반복힛수, 글자수, 암호화 방식);
     let { email, password, name } = ctx.request.body;
-    let result = crypto.pbkdf2Sync(password, process.env.APP_KEY,50, 50, 'sha512');
+    let result = await crypto.pbkdf2Sync(password, process.env.APP_KEY,50, 50, 'sha512');
 
     let { affectedRows } = await register(email, result.toString('base64'), name);
     console.log(affectedRows);
@@ -33,14 +33,13 @@ exports.login = async (ctx, next) => {
     //let pw = ctx.request.body.pw;
 
     let { email, password } = ctx.request.body;
-    let result = crypto.pbkdf2Sync(password, process.env.APP_KEY,50, 50, 'sha512');
+    let result = await crypto.pbkdf2Sync(password, process.env.APP_KEY,50, 50, 'sha512');
 
     let item = await login(email,result.toString('base64'));
 
     if (item ==null) {
         ctx.body = { result: "result null fail" };
     } else {
-        //로그인 성공시 토큰을 생성, 브라우저로 전송
         let token = await generateToken({ name:item.name });
         ctx.body = token;
     }
