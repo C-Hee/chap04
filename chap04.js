@@ -61,4 +61,12 @@ file은 용량 크므로 별도테이블에 저장 후 다른 테이블에서 jo
 /file/:id 순서로 적어야 하는 이유
 순서 반대일 경우 업로드 파일도 쿼리로 인식.
 
+0118
+피드의 파일업로드
+파일은 피드와 동시에 업로드되는 것이 아니라.
+filecontroller를 통해 업로드 된 후 fileId받아옴
+fileId와 userId로 피드 전송
+let item = await query.show(id);
+token('abc', id: item.id)
+
 */

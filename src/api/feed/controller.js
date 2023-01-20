@@ -1,3 +1,6 @@
+const {  storeFeed, showFeed, updateFeed, deleteFeed } = require('./query');
+const verify = require('../../middleware/auth'); 
+
 exports.index = (ctx, next) =>{
     //ctx.body = `피드 리스트`;
     ctx.body=ctx.query;//쿼리를 그대로 body의 내용으로 보냄
@@ -7,14 +10,19 @@ exports.index = (ctx, next) =>{
      * query.color
      * query.size
      * query.count
-     * (브라우저에서 ?color=red&size=XL&count2 입력)
+     * (브라우저에서 ?color=red&size=XL&count2 입력한 경우)
      */
     let result = isNewFeed('2023-01-12');
 }
-
+ /**피드 등록 */
 exports.store = (ctx, next) => {
-    let body = ctx.request.body;//브라우저에서 보낸 body를
-    ctx.body = body;//웹페이지 body로 내보냄 하지만!! body를 parsing해야 사용할 수 있음> index에서 설정
+    let { userId, fileId, content } = ctx.request.body;
+    
+    let result = storeFeed(userId,fileId,content);
+
+    ctx.body = {result:result};
+
+
 }
 /**피드 상세보기*/
 exports.show = (ctx,next)=>{
