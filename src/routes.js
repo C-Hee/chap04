@@ -31,6 +31,7 @@ router.post('/api/user/login', apiUserController.login);
 router.use(verify);
 router.get('/api/user/:id', apiUserController.info);
 
+
 router.get('/api/feed', apiFeedController.index);
 router.post('/api/feed',apiFeedController.store);
 router.get('/api/feed/:id',apiFeedController.show);

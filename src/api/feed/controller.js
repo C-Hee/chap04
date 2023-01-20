@@ -1,40 +1,54 @@
-const {  storeFeed, showFeed, updateFeed, deleteFeed } = require('./query');
+const { info,store, show, update} = require('./query');
 const verify = require('../../middleware/auth'); 
 
-exports.index = (ctx, next) =>{
-    //ctx.body = `피드 리스트`;
-    ctx.body=ctx.query;//쿼리를 그대로 body의 내용으로 보냄
-    /**
-     * get방식 쿼리 값을 가져오는 방법
-     * let query =ctx.query;
-     * query.color
-     * query.size
-     * query.count
-     * (브라우저에서 ?color=red&size=XL&count2 입력한 경우)
-     */
-    let result = isNewFeed('2023-01-12');
+/** 피드 리스트 출력 */
+exports.index = async(ctx, next) =>{
+    ctx.body = await info();
 }
  /**피드 등록 */
 exports.store = async (ctx, next) => {
     let { userId, fileId, content } = ctx.request.body;
     
-    let result = await storeFeed(userId,fileId,content);
-
-    ctx.body = {result:result};
+    let {affectedRows,insertId} = await store(userId,fileId,content);
+    
+    if (affectedRows > 0) {
+        ctx.body = {
+            result: "ok",
+            id: insertId
+        }
+    } else {
+        ctx.body = {
+            result: "fail"
+        }
+    }
 }
 
 /**피드 상세보기*/
-exports.show = (ctx,next)=>{
-    let id= ctx.params.id;
-    ctx.body=`${id} 피드 상세`
+exports.show = async (ctx,next)=>{
+    let id = ctx.params.id;
+    let result = await show(id); 
+    if (result ==null) {
+        ctx.body = { result: "result null fail" };
+    } else {
+        ctx.body = result;
+    }
 }
 /** 피드 업데이트 */
-exports.update = (ctx, next)=>{
-    let id =ctx.params.id;
-    ctx.body = `${id} 피드 수정`;
+exports.update = async(ctx, next)=>{
+    let {id, userId,fileId,content} =ctx.request.body
+    let {affectedRows,insertId} = await update(id,userId,fileId,content);
+    if (affectedRows > 0) {
+        ctx.body = {
+            result: `feed ${insertId}update ok`
+        }
+    } else {
+        ctx.body = {
+            result: `feed update fail`
+        }
+    }
 }
 /** 피드 삭제 */
-exports.delete = (ctx, next)=>{
+exports.delete = async(ctx, next)=>{
     let id =ctx.params.id;
     ctx.body = `${id} 피드 삭제`;
 }
