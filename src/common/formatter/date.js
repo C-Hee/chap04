@@ -14,5 +14,4 @@ exports.isNewFeed = (date) =>{
     let currentTime = moment().add(-10,'minute');//현재시간에서 10분을 뺏을때 시간을 feedDate와 비교
     
     return feedDate.isAfter(currentTime);
-    //
 }
