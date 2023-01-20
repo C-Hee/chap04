@@ -7,7 +7,6 @@ exports.info = async()=>{
     const query = `SELECT id FROM feed`;
     let result = await pool(query);
     return (result.length< 0)?null: result;
-    
 }
 
 /**
@@ -22,7 +21,6 @@ exports.store = async(userId,fileId,content)=>{
     (user_id, image_id, content)
     VALUES (?,?,?)`;
     return await pool(query,[userId,fileId,content]);
-    
 }
 
 /**
@@ -32,7 +30,7 @@ exports.store = async(userId,fileId,content)=>{
 */
 exports.show = async (feedId) => {
     const query = `SELECT * FROM feed WHERE
-    id = ?`;
+    id = ?;`;
     let result = await pool(query, [feedId]);
     return (result.length< 0) ? null : result;
 }
@@ -51,16 +49,18 @@ exports.update = async(id,fileId,userId,content)=>{
         SET user_id = ?,
             image_id = ?,
             content = ?
-        WHERE id = ?;
-        `;
+        WHERE id = ?`;
     return await pool(query,[userId,fileId,content,id]);
 }
 
 /**
 * 데이터베이스의 피드를 삭제하는 함수
 * @param {string} userId 사용자id
-* @param {string} fileId 파일id
-* @param {string} content 피드 내용
+* @param {string} id 피드 id
 * @returns
 */
-exports.delete = async()=>{return}
+exports.delete = async(id,userId)=>{
+    const query = `DELETE FROM feed WHERE
+        id = ? AND user_id = ?`;
+    return await pool(query,[id,userId]);
+}
