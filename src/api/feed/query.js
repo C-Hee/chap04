@@ -10,7 +10,7 @@ const { pool } = require('../../data');
 */
 exports.storeFeed = async(userId,fileId,content)=>{
     const query = `INSERT INTO feed
-    (user_id, file_id, content)
+    (user_id, image_id, content)
     VALUES (?,?,?)`;
     let {affectedRows} = await pool(query,[userId,fileId,content]);
     return affectedRows>0?"Success":"fail" 

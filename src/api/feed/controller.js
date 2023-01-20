@@ -15,15 +15,14 @@ exports.index = (ctx, next) =>{
     let result = isNewFeed('2023-01-12');
 }
  /**피드 등록 */
-exports.store = (ctx, next) => {
+exports.store = async (ctx, next) => {
     let { userId, fileId, content } = ctx.request.body;
     
-    let result = storeFeed(userId,fileId,content);
+    let result = await storeFeed(userId,fileId,content);
 
     ctx.body = {result:result};
-
-
 }
+
 /**피드 상세보기*/
 exports.show = (ctx,next)=>{
     let id= ctx.params.id;
