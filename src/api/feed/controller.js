@@ -13,12 +13,12 @@ exports.store = async (ctx, next) => {
     
     if (affectedRows > 0) {
         ctx.body = {
-            result: "ok",
+            result: "store ok",
             id: insertId
         }
     } else {
         ctx.body = {
-            result: "fail"
+            result: "store fail"
         }
     }
 }
@@ -28,22 +28,23 @@ exports.show = async (ctx,next)=>{
     let id = ctx.params.id;
     let result = await show(id); 
     if (result ==null) {
-        ctx.body = { result: "result null fail" };
+        ctx.body = { result: "show result null fail" };
     } else {
         ctx.body = result;
     }
 }
 /** 피드 업데이트 */
 exports.update = async(ctx, next)=>{
-    let {id, userId,fileId,content} =ctx.request.body
-    let {affectedRows,insertId} = await update(id,userId,fileId,content);
+    let {userId,fileId,content} =ctx.request.body
+    let id =  ctx.params.id;
+    let {affectedRows} = await update(id,userId,fileId,content);
     if (affectedRows > 0) {
         ctx.body = {
-            result: `feed ${insertId}update ok`
+            result: `update ok`
         }
     } else {
         ctx.body = {
-            result: `feed update fail`
+            result: `update fail`
         }
     }
 }
