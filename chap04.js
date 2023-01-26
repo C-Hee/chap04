@@ -69,4 +69,13 @@ fileId와 userId로 피드 전송
 let item = await query.show(id);
 token('abc', id: item.id)
 
-*/
+
+/**
+     * get방식 쿼리 값을 가져오는 방법
+     * let query =ctx.query;
+     * query.color
+     * query.size
+     * query.count
+     * (브라우저에서 ?color=red&size=XL&count2 입력한 경우)
+     */
+
